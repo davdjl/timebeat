@@ -43,7 +43,6 @@ func (bt *timebeat) Run(b *beat.Beat) error {
 	}
 
 	ticker := time.NewTicker(bt.config.Period)
-	counter := 1
 	for {
 		select {
 		case <-bt.done:
@@ -55,12 +54,11 @@ func (bt *timebeat) Run(b *beat.Beat) error {
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
 				"type":    b.Info.Name,
-				"counter": counter,
+				"files": getTime(bt.config.Path),
 			},
 		}
 		bt.client.Publish(event)
 		logp.Info("Event sent")
-		counter++
 	}
 }
 
